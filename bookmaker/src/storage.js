@@ -1,0 +1,9 @@
+let dbPromise;
+export function database(){return dbPromise??=new Promise((resolve,reject)=>{const r=indexedDB.open('bookmaker',1);r.onupgradeneeded=()=>{for(const name of ['books','history','settings'])r.result.createObjectStore(name,{keyPath:'id'});};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+export async function transact(store,mode,fn){const db=await database();return new Promise((resolve,reject)=>{const tx=db.transaction(store,mode),r=fn(tx.objectStore(store));tx.oncomplete=()=>resolve(r?.result);tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error||new Error('Хранилище недоступно'));});}
+export const all=store=>transact(store,'readonly',s=>s.getAll());
+export const get=(store,id)=>transact(store,'readonly',s=>s.get(id));
+export const put=(store,value)=>transact(store,'readwrite',s=>s.put(value));
+export const remove=(store,id)=>transact(store,'readwrite',s=>s.delete(id));
+export async function saveBook(book,expected){const db=await database();return new Promise((resolve,reject)=>{const tx=db.transaction('books','readwrite'),s=tx.objectStore('books'),r=s.get(book.id);let conflict=false;r.onsuccess=()=>{if(r.result&&(r.result.revision||0)!==expected){conflict=true;tx.abort();return;}s.put({...book,revision:expected+1});};tx.oncomplete=()=>resolve(expected+1);tx.onabort=()=>reject(new Error(conflict?'Книга изменена в другой вкладке. Ваша версия сохранена отдельной копией.':tx.error?.message||'Не удалось сохранить книгу.'));tx.onerror=()=>reject(tx.error);});}
+export async function snapshot(book){await put('history',{id:crypto.randomUUID(),bookId:book.id,date:new Date().toISOString(),book:structuredClone(book)});const h=(await all('history')).filter(x=>x.bookId===book.id).sort((a,b)=>b.date.localeCompare(a.date));for(const old of h.slice(30))await remove('history',old.id);}

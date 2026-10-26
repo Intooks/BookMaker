@@ -1,0 +1,16 @@
+import { build } from 'esbuild';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+await build({entryPoints:['./src/app.js'],bundle:true,minify:true,format:'esm',target:['es2022'],outfile:'../web/bookmaker/app.js',legalComments:'external'});
+const licensePath='../web/bookmaker/app.js.LEGAL.txt';
+writeFileSync(licensePath,readFileSync(licensePath,'utf8').replace(/[ \t]+$/gm,''));
+const output='../web/bookmaker/';
+const hash=file=>createHash('sha256').update(readFileSync(output+file)).digest('hex').slice(0,16);
+const appVersion=hash('app.js'),styleVersion=hash('style.css');
+const html=readFileSync(output+'index.html','utf8').replace(/\.\/app\.js(?:\?v=[a-f0-9]+)?/g,'./app.js?v='+appVersion).replace(/\.\/style\.css(?:\?v=[a-f0-9]+)?/g,'./style.css?v='+styleVersion);
+writeFileSync(output+'index.html',html);
+const files=['index.html','app.js','style.css','background.webp','icon-192.png','icon-512.png','manifest.webmanifest','manrope.ttf'];
+const version=createHash('sha256');
+for(const f of files) version.update(readFileSync('../web/bookmaker/'+f));
+const assets=['',...files,'app.js?v='+appVersion,'style.css?v='+styleVersion];
+writeFileSync(output+'sw.js',readFileSync('src/sw.js','utf8').replace('__VERSION__',version.digest('hex').slice(0,16)).replace('__ASSETS__',JSON.stringify(assets)));

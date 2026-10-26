@@ -1,0 +1,39 @@
+Bundled license information:
+
+jszip/dist/jszip.min.js:
+  /*!
+
+  JSZip v3.10.1 - A JavaScript class for generating and reading zip files
+  <http://stuartk.com/jszip>
+
+  (c) 2009-2016 Stuart Knightley <stuart [at] stuartk.com>
+  Dual licenced under the MIT license or GPLv3. See https://raw.github.com/Stuk/jszip/main/LICENSE.markdown.
+
+  JSZip uses the library pako released under the MIT license :
+  https://github.com/nodeca/pako/blob/main/LICENSE
+  */
+
+ieee754/index.js:
+  /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
+
+buffer/index.js:
+  /*!
+   * The buffer module from node.js, for the browser.
+   *
+   * @author   Feross Aboukhadijeh <https://feross.org>
+   * @license  MIT
+   */
+
+dompurify/dist/purify.es.mjs:
+  /*! @license DOMPurify 3.4.16 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.4.16/LICENSE */
+  /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */
+
+docx/dist/index.mjs:
+  /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
+  /*!
+   * The buffer module from node.js, for the browser.
+   *
+   * @author   Feross Aboukhadijeh <https://feross.org>
+   * @license  MIT
+   */
+  /*! http://mths.be/fromcodepoint v0.1.0 by @mathias */
